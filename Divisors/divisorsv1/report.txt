@@ -1,6 +1,0 @@
-It was an okay program not too difficult or anything.
-The logic was simple behind it, check if number is prime and if not
-a simple for loop to find its divisors. I will probably take this step further by 
-also finding the number as a multiplication of numbers (similar concepts but different projects).
-
-END OF REPORT 18/10/2023
