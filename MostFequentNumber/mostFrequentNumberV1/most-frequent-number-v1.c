@@ -3,7 +3,7 @@
 int main()
 {
     //Set variables
-    int count, numOfNumbers, temp;
+    int numOfNumbers, temp;
     printf("How many numbers will you enter?: ");
     scanf("%d", &numOfNumbers);
 
