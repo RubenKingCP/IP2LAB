@@ -1,0 +1,21 @@
+
+MAIN
+1. Ask number
+2. Get number
+3. Check if number is prime
+4. If prime return divisors 1, number
+5. If not prime return divisors
+
+
+isPrime
+1. Read number
+2. Count integer for loop
+2. For loop from 2 to number - 1
+3. If no module = 0 between number and count return 1;
+4. If module = 0 return 0
+
+findDivisors
+1. Read number
+2. Count integer for loop
+3. For loop from 1 to number
+4. If number % count == 0 print count

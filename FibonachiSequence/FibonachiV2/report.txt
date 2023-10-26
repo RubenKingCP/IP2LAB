@@ -1,0 +1,5 @@
+This code was modified in the lab. 
+Changes since v1. made it so you can type how many numbers you want and also used 
+a secondary function for the for loop(dunno how it helped).
+
+END REPORT 19/10/2023
