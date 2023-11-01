@@ -3,8 +3,8 @@
 
 int main()
 {   
-
-    int size; //Variable to store the total amount of numbers
+    //Variable to store the total amount of numbers
+    int size; 
 
     //Get total of numbers
     printf("Enter amount of numbers: ");
