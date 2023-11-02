@@ -10,47 +10,51 @@ enum operators {
 };
 
 //add two numbers
-int add(int a, int b) {
+void add(int a, int b) {
     int result;
     result = a + b;
-    return result;
+    printf("The addition is equal to %d\n", result);
 }
 
 //substract two numbers
-int substract(int a, int b) {
+void substract(int a, int b) {
     int result;
     result = a - b;
-    return result;
+    printf("The substraction is equal to %d\n", result);
 }
 
 //divide two numbers first / second
-int divide(int a, int b) {
-    int result;
-    result = a / b;
-    return result;
+void divide(int a, int b) {
+    //In case of a xero division
+    if (b == 0) printf("Can't divide\n");
+    else {
+        int result;
+        result = a / b;
+        printf("The division is equal to %d\n", result);
+    }
 }
 
 //multiply two numbers
-int multiply(int a, int b) {
+void multiply(int a, int b) {
     int result;
     result = a * b;
-    return result;
+    printf("The multiplication is equal to %d\n", result);
 }
 
 int main()
 {
     //Set variables
-    long long int a, b, tmp;
+    int a, b, tmp;
     int flick = 1;
     int operator;
 
     //Get first number
     printf("Enter first number: ");
-    scanf("%lld", &a);
+    scanf("%d", &a);
 
     //Get second number
     printf("Enter second number: ");
-    scanf("%lld", &b);
+    scanf("%d", &b);
 
     //While loop so it will keep asking the user
     while (flick != 0)
@@ -63,26 +67,16 @@ int main()
         switch (operator)
         {
         case ADD:
-            tmp = add(a, b);
-            printf("The addition is equal to %lld\n", tmp);
+            add(a, b);
             break;
         case SUB:
-            tmp = substract(a, b);
-            printf("The substraction is equal to %lld\n", tmp);
+            substract(a, b);
             break;
         case DIV:
-            //In case of a xero division
-            if (b == 0)
-            {
-                printf("Can't divide\n");
-                break;
-            }
-            tmp = divide(a, b);
-            printf("The division is equal to %lld\n", tmp);
+            divide(a, b);
             break;
         case MUL:
-            tmp = multiply(a, b);
-            printf("The multiplication is equal to %lld\n", tmp);
+            multiply(a, b);
             break;
         case EXIT:
             printf("\nEnding program...\n");
