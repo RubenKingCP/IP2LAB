@@ -16,12 +16,6 @@ int main()
     scanf("%10s", name);
 
     int size = strlen(name);
-
-    /* didnt work
-    if (size > 10) {
-        name[N] = (char)malloc(sizeof(char) * size);
-    }
-    */
    
     //Question a
     printf("Question A: ");
