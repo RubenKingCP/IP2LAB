@@ -13,7 +13,7 @@ int main()
 
     //Ask name
     printf("Enter your surname: ");
-    scanf("%s", name);
+    scanf("%10s", name);
 
     int size = strlen(name);
 
