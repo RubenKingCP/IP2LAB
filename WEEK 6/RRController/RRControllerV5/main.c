@@ -93,7 +93,18 @@ int main() {
 	
 	
 	while(exit != 1) {
-		
+		robotGetSensors(socketfd, &robotSensors);
+		//Final version
+		if (!robotSensors.right.wall) {
+            robotTurnRight(socketfd);
+            robotStep(socketfd, 8);
+        } else if (!robotSensors.front.wall) {
+            robotStep(socketfd, 8);
+        } else {
+            robotTurnLeft(socketfd);
+        }
+
+		/*VERSION 3
 		//If conditional to check for wall 
 		if (robotMode == 0) {
 			
@@ -129,7 +140,7 @@ int main() {
 				robotTurnLeft(socketfd);
 				robotGoAhead(socketfd);
 			}
-			
+		 */
 			
 			/*SECOND VERSION
 			//If in deadend make a uturn
@@ -182,18 +193,16 @@ int main() {
 			 		
 			}
 			*/
-		}
-		
+	
 		//Slight delay to the while loop
-		usleep(100000);
+		usleep(50000);
 		
 		//Checks condition to exit loop
 		exit = robotExitFound(socketfd);
 		robotGetSensors(socketfd, &robotSensors);
 	}
-	
-	//Center robot on exit and stop it
-	robotStep(socketfd, 4);
+
+	//Stop robot
 	robotStop(socketfd);
 	
 	system("pause");
