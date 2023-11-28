@@ -164,6 +164,7 @@ void sortInc4String(char ** words, int size) {
 			}
 		}
 	}
+	puts("incremental_sort completed ");
 }
 
 void sortDec4String(char ** words, int size) {
@@ -181,6 +182,7 @@ void sortDec4String(char ** words, int size) {
 			}
 		}
 	}
+	puts("decremental_sort completed ");
 }
 
 void getWordsStats(int size, char ** words) {
