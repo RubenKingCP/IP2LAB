@@ -2,10 +2,9 @@
 
 /*
 function Main
-A.1 Set variables
-A.2 Get the number of small and big bottles
-A.3 Get the sum of the bottles and the money
-A.4 Check with an if conditional if it satisfies the conditions and act accordingly
+A.1 Get the number of small and big bottles
+A.2 Get the sum of the bottles and the money
+A.3 Check with an if conditional if it satisfies the conditions and act accordingly
 A.4.1 If it's bigger than 600 give 20% discount
 A.4.2 If it's bigger than 200 or 3000 bottles give 8% discount
 A.5 Print the total cost

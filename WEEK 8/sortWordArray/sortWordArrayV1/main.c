@@ -1,22 +1,21 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
 #include "headers/i2p.h"
 
-//Set prototypes
-void allocateMemory(int *size, char * words[30]);
+#define SIZE 30
+#define WIDTH 30
 
-void getWords(int size, char * words[30]);
+char words[SIZE][WIDTH];
+int size;
 
-void printWords(int size, char * words[30]);
+void printWords();
 
-void getWordsStats(int size, char * words[30]);
+void getWords();
 
-void getCharacterStats(int size, char * words[30]);
+void getCharacterStats();
 
-void freeMemory(int size, char * words[30]);
+void getWordStats();
 
-//Set enumaration
 enum menu {
 	TERMINATE,
 	GET_WORDS,
@@ -29,13 +28,10 @@ enum menu {
 
 int main() {
 	//Set variables
-	int word, size;
-	char * words[30];
 	int choice = -1;
 	
 	//Get the first word
-	allocateMemory(&size, words);
-	getWords(size, words);
+	getWords();
 	
 	system("cls");
 	
@@ -49,102 +45,66 @@ int main() {
 		
 		switch(choice) {
 			case TERMINATE:
-				freeMemory(size, words);
 				printf("Exiting program...!");
 				return 0;
 				break;
 			case GET_WORDS:
-				//Free previous allocated memory
-				freeMemory(size, words);
-				//Get size and give memory
-				allocateMemory(&size, words);
-				//Get words function
-				getWords(size, words);
-				//System to clear screen
+				getWords();
 				break;
 			case SHOW_WORDS:
 				//Print the word list
-				printWords(size, words);
-				//System to clear scree
+				printWords();
 				break;
 			case SORT_ASC:
 				//Sort words
-				sortInc4String(words, size, 30);
+				sortInc4String(words, size, WIDTH);
 				//Print them sorted
-				printWords(size, words);
+				printWords();
 				break;
 			case SORT_DESC:
 				//Sort words
-				sortDec4String(words, size, 30);
+				sortDec4String(words, size, WIDTH);
 				//Print them sorted
-				printWords(size, words);
+				printWords();
 				break;
 			case WORD_STATS:
 				//Get the words status
-				getWordsStats(size, words);
-				//System to clear screen
+				getWordsStats();
 				break;
 			case CHARACTER_STATS:
 				//Get character status
-				getCharacterStats(size, words);
+				getCharacterStats();
 				break;
 			default:
 				break;
 		}	
+		printf("\n");
 		system("pause");
 		system("cls");
 	}
 	
 	return 0;
 }
-
-void allocateMemory(int *size, char *words[30]) {
-    // Set variables
-    int i;
-
-    // Repeat until under 30 words
-    do {
-        // Ask number of words
-        printf("Enter how many words you want (up to 30): ");
-        scanf("%d", size);
-    } while (*size > 30 || *size == 0);
-
-    // Check to see the size
-    if (*size > 30) {
-        printf("Word limit error!\nExiting program.");
-        exit(0);
-    }
-
-    // Allocate the memory you need to the arrays
-    for (i = 0; i < *size; i++) {
-        words[i] = (char *)malloc(30 * sizeof(char)); // Using 30 for word length
-    }
-}
-
-void getWords(int size, char * words[30]) {
-	//Set variables
-	int word;
+void getWords() {
+	int i;
 	
-	for (word = 0; word < size; word++) {
-		//Ask word
-		printf("\nEnter word: ");
-		//Get word and start storing it from the end of the previous word
-		scanf("%s", words[word]);
+	printf("How many words: ");
+	scanf("%d", &size);
+	
+	for (i = 0; i < size; i++) {
+		printf("Enter word: ");
+		scanf("%s", &words[i]);
 	}
 }
 
-void printWords(int size, char * words[30]) {
-	//Set variables
-	int word;
-	//Print the words
-	for (word = 0; word < size; word++) {
-		printf("%s ", words[word]);
+void printWords() {
+	int i;
+	for (i = 0; i < size; i++) {
+		printf("%s ", words[i]);
 	}
-	//Start new line
-	printf("\n");
 }
 
-void getWordsStats(int size, char * words[30]) {
+void getWordsStats() {
 	//Set variables;
 	int word, min, max, wordLen;
 	float average;
@@ -170,7 +130,7 @@ void getWordsStats(int size, char * words[30]) {
 	printf("Max Word Length - %d\nMin Word Length- %d\nAverage Word Length - %.2f\n", max, min, average);
 }
 
-void getCharacterStats(int size, char * words[30]) {
+void getCharacterStats() {
 	//Set variables
 	int word, letter, charCount, charMax, charMin, charTotal, maxWord, minWord;
 	float charAverage;
@@ -213,14 +173,4 @@ void getCharacterStats(int size, char * words[30]) {
 	charAverage = (float)charTotal / (float)size;
 	//Print Stats
 	printf("TotalChar - %d\nAverageChar - %.2f\nMaxChar - %d\nMinChar - %d\nMaxWord - %s\nMinWord - %s\n", charTotal, charAverage, charMax, charMin, words[maxWord], words[minWord]);
-}
-
-void freeMemory(int size, char *words[30]) {
-    int word;
-
-    // Free the allocated memory once the program is done
-    for (word = 0; word < size; word++) {
-        free(words[word]);
-    }
-    free(words);
 }
