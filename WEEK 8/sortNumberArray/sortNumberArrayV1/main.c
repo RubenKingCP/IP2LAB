@@ -19,7 +19,7 @@ int main() {
 	srand(time(NULL));
 	for (i = 0; i < LENGTH; i++) {
 		random = (rand() % 100);
-		array[i] = random;
+		array[i] = random;		
 	}
 	
 	//Print the list in normal form
