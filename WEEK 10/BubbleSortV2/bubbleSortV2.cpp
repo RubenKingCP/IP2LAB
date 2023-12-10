@@ -5,13 +5,14 @@
 system("pause") or input loop */
 void displayArray(int ar[],int numOfElements);
 void displayArrayStatus(int ar[],int numOfElements);
+void moveBubbleUp(int ar[], int numOfElements, int pass);
 void bubbleSort(int ar[], int numOfElements);
 bool isSorted(int ar[],int numOfElements);
 
 
 
 int main() {
-	int ar[] = {3,5,4,7,2,8,1,0,9,6};
+	int ar[] = {3, 0, 2, 7,  5,  6,  9, 1, 8, 4, 9, 8};
 	int numOfElements;
 	printf("Bubble sort\n");
 	
@@ -50,16 +51,23 @@ void bubbleSort(int ar[], int numOfElements) {
 	int i,j;
 	int temp;
 	for(j = 0;j<numOfElements - 1;j++) {
-		for(i=0;i<numOfElements - 1 - j;i++) {
-			if(ar[i] > ar[i+1]) {
-				temp = ar[i];
-				ar[i] = ar[i+1];
-				ar[i+1] = temp;
-				printf("Iteration no%d-> ",i+1);
-				displayArray(ar,numOfElements - j);
-			}
-		}
+		moveBubbleUp(ar,numOfElements, j);
 		printf("\nEnd of array pass for %d elements\n", numOfElements - j);
 		system("pause");
 	}
 }
+
+void moveBubbleUp(int ar[], int numOfElements, int pass){
+	int i;
+	int temp;
+	for(i=0;i<numOfElements - 1;i++) {
+		if(ar[i] > ar[i+1]) {
+			temp = ar[i];
+			ar[i] = ar[i+1];
+			ar[i+1] = temp;
+			printf("Iteration no%d-> ",i+1);
+			displayArray(ar,numOfElements - pass);
+		}	
+	}
+}
+

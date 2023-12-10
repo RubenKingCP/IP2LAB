@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-/* run this program using the console pauser or add your own getch,
-system("pause") or input loop */
+
 void displayArray(int ar[],int numOfElements);
 void displayArrayStatus(int ar[],int numOfElements);
+void moveBubbleUp(int ar[], int numOfElements);
 void bubbleSort(int ar[], int numOfElements);
 bool isSorted(int ar[],int numOfElements);
 
-int ar[] = {3,5,4,7,2,8,1,0,9,6};
+int ar[] = {1, 0, 8, 3, 6, 4, 9, 2, 7, 5, 4};
 
 int main(int argc, char *argv[]) {
 	int numOfElements;
@@ -17,6 +17,9 @@ int main(int argc, char *argv[]) {
 	displayArray(ar,numOfElements);
 	displayArrayStatus(ar,numOfElements);
 	bubbleSort(ar, numOfElements);
+	displayArray(ar,numOfElements);
+	displayArrayStatus(ar,numOfElements);
+
 	return 0;
 }
 
@@ -40,7 +43,13 @@ void displayArray(int ar[],int numOfElements){
 }
 
 void bubbleSort(int ar[], int numOfElements) {
-	int i,j;
+	moveBubbleUp(ar, numOfElements);
+	printf("\nEnd of array pass\n");
+	system("pause");
+}
+
+void moveBubbleUp(int ar[], int numOfElements){
+	int i;
 	int temp;
 	for(i=0;i<numOfElements - 1;i++) {
 		if(ar[i] > ar[i+1]) {
@@ -51,8 +60,5 @@ void bubbleSort(int ar[], int numOfElements) {
 			displayArray(ar,numOfElements);
 		}	
 	}
-	printf("\nEnd of array pass\n");
-	system("pause");
-	displayArray(ar,numOfElements);
-	displayArrayStatus(ar,numOfElements);
 }
+

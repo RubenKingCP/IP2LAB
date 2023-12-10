@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "i2p.h"
 /* run this program using the console pauser or add your own getch,
 system("pause") or input loop */
 void displayArray(char ar[][10],int numOfElements);
 void displayArrayStatus(char ar[][10],int numOfElements);
-void moveBubbleUp(char ar[][10], int numOfElements);
-void bubbleSort(char ar[][10], int numOfElements);
 bool isSorted(char ar[][10],int numOfElements);
 
 
@@ -20,7 +19,7 @@ int main() {
 	
 	displayArray(ar,numOfElements);
 	displayArrayStatus(ar,numOfElements);
-	bubbleSort(ar, numOfElements);
+	sortInc4String(ar, numOfElements, 10);
 	displayArray(ar,numOfElements);
 	displayArrayStatus(ar,numOfElements);
 	return 0;
@@ -45,27 +44,4 @@ void displayArray(char ar[][10],int numOfElements){
 	printf("\n");
 }
 
-void bubbleSort(char ar[][10], int numOfElements) {	
-	moveBubbleUp(ar, numOfElements);
-	//printf("\nEnd of array pass for %d elements\n\n", numOfElements);
-	//system("pause");
-	//printf("\n");
-	if(!isSorted(ar, numOfElements)) {
-			bubbleSort(ar, numOfElements - 1);
-		}
-	return;
-}
 
-void moveBubbleUp(char ar[][10], int numOfElements) {
-	int i;
-	char temp[10];
-	for(i=0;i<numOfElements - 1;i++) {
-		if(strcmp(ar[i], ar[i+1]) > 0) {
-			strcpy(temp, ar[i]);
-			strcpy(ar[i], ar[i+1]);
-			strcpy(ar[i+1], temp);
-			//printf("Iteration no%d-> ",i+1);
-			//displayArray(ar,numOfElements);
-		}
-	}
-}
