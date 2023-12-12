@@ -4,66 +4,94 @@
 #include <time.h>
 
 enum action {
-	EXIT,
-	GET_ORDER,
-	SHOW_ORDER
+    EXIT,
+    GET_ORDER,
+    SHOW_ORDER,
+    SHOW_ALL_ORDERS,
+    SAVE_PENDING,
+    LOAD_PENDING,
+    FINISH_PENDING
 };
 
-typedef struct orderCost{
-	float firstCost;
-	float finalCost;
-	int discount;
+typedef struct orderCost {
+    float firstCost;
+    float finalCost;
+    int discount;
 } Cost;
 
-typedef struct orderDetails{
-	char firstName[50];
-	char lastName[50];
-	char startDate[20];
-	char deadLine[20];
-	char endDate[20];
-	Cost orderCost;
-	int smallBottles;
-	int bigBottles;
+typedef struct orderDetails {
+    char firstName[50];
+    char lastName[50];
+    char startDate[20];
+    char deadLine[20];
+    char endDate[20];
+    Cost orderCost;
+    int smallBottles;
+    int bigBottles;
+    int orderNumber;
+    int orderStatus;
 } Details;
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
-Details getOrder();
+
+Details getOrder(int numOrders);
 Cost getOrderCost(int bigBottles, int smallBottles);
-void showOrder(Details orderDetails);
+void showOrder(Details currentOrder);
 void getCurrentDate();
 
 int main() {
-	//Set variable
-	int action = -1;
-	
-	
-	while(action != 0) {
-		//Set the order variable
-		Details currentOrder;
-		
-		//Get action
-		printf("Enter action: ");
-		scanf("%d", &action);
-		
-		//Set logic gate
-		switch(action){
-			case EXIT:
-				return 0;
-				break;
-			case GET_ORDER:
-				currentOrder = getOrder();
-				break;
-			case SHOW_ORDER:
-				showOrder(currentOrder);
-				break;
-			default:
-				break;
-		}
-	}
-	return 0;
+    // Set variables
+    int action = -1;
+    int numOrders = 0;
+    Details orderArray[100]; // Assuming a maximum of 100 orders
+
+    while (action != 0) {
+        // Get action
+        
+        printf("Exit: 0\n");
+		printf("Get order: 1\n");
+		printf("Show current order: 2\n");
+		printf("Show Orders: 3\n");
+		printf("Save pending orders: 4\n");
+		printf("Load pending order: 5\n");
+		printf("Ready order: 6\n");
+        printf("Enter action:\n");
+        scanf("%d", &action);
+
+        // Set logic gate
+        switch (action) {
+            case EXIT:
+                return 0;
+            case GET_ORDER:
+                if (numOrders < 100) {
+                    orderArray[numOrders++] = getOrder(numOrders);
+                } else {
+                    printf("Maximum number of orders reached.\n");
+                }
+                break;
+            case SHOW_ORDER:
+                showOrder(orderArray[numOrders - 1]);
+                break;
+            case SHOW_ALL_ORDERS:
+                //showAllOrders(orderArray, numOrders);
+                break;
+            case SAVE_PENDING:
+                //savePendingOrders(orderArray, numOrders);
+                break;
+            case LOAD_PENDING:
+                //loadPendingOrders(orderArray, &numOrders);
+                break;
+            case FINISH_PENDING:
+                //finishPendingOrder(orderArray, numOrders);
+                break;
+            default:
+                printf("Invalid action.\n");
+                break;
+    	}
+    }
+    return 0;
 }
 
-Details getOrder() {
+Details getOrder(int numOrders) {
 	//Struct variable
 	Details currentOrder;
 	//Other variables
@@ -82,6 +110,7 @@ Details getOrder() {
 	scanf("%s", &currentOrder.deadLine);
 	
 	//Get the rest of details
+	currentOrder.orderNumber = numOrders;
 	//Cost related info
 	currentOrder.orderCost = getOrderCost(currentOrder.bigBottles, currentOrder.smallBottles);
 	//Time info
@@ -89,13 +118,14 @@ Details getOrder() {
 	strcpy(currentOrder.startDate, startDate);
 	//Order Status set to pending
 	strcpy(currentOrder.endDate, "Pending");
+	currentOrder.orderStatus = 0;
 	
 	return currentOrder;
 }
 
 void showOrder(Details currentOrder){
 	//Print the details
-	printf("Order Details:\n");
+	printf("Order No.%d Details:\n", currentOrder.orderNumber);
 	printf("\t-Small Bottles: %d\n", currentOrder.smallBottles);
 	printf("\t-Big Bottles: %d\n", currentOrder.bigBottles);
 	printf("\t-First Name: %s\n", currentOrder.firstName);
