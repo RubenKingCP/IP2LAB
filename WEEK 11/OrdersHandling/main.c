@@ -13,7 +13,9 @@ enum action {
     READY_PENDING_ORDERS,
     SHOW_READY_ORDERS,
     CLOSE_READY_ORDER,
-    SHOW_CLOSED_ORDERS
+    SHOW_CLOSED_ORDERS,
+    SAVE_CLOSED_ORDERS,
+    LOAD_CLOSED_ORDERS
 };
 
 typedef struct orderCost {
@@ -42,7 +44,9 @@ Details closeReadyOrder(Details readyOrderArray[], int *numReadyOrders);
 
 void showClientOrder(Details pendingOrderArray[], int numPendingOrders);
 void getCurrentDate();
-void showOrders(Details OrderArray[], int numOrders);
+void showOrders(Details orderArray[], int numOrders);
+void saveOrdersToFile(Details orderArray[], int numOrders, const char *filename);
+void loadAndUpdateOrders(Details orderArray[], int *numOrders, const char *filename);
 
 int main() {
     // Set variables
@@ -63,12 +67,14 @@ int main() {
 		printf("Get order: 1\n");
 		printf("Show client orders: 2\n");
 		printf("Show Pending Orders: 3\n");
-		//printf("Save pending orders: 4\n");
-		//printf("Load pending order: 5\n");
+		printf("Save pending orders: 4\n");
+		printf("Load pending order: 5\n");
 		printf("Ready order: 6\n");
 		printf("Show ready orders: 7\n");
 		printf("Close order: 8\n");
 		printf("Show closed order: 9\n");
+		printf("Save closed orders: 10\n");
+		printf("Load closed orders: 11\n");
 		
         printf("Enter action:\n");
         scanf("%d", &action);
@@ -91,10 +97,11 @@ int main() {
                 showOrders(pendingOrderArray, numPendingOrders);
                 break;
             case SAVE_PENDING:
-                //savePendingOrders(orderArray, numOrders);
+				saveOrdersToFile(pendingOrderArray, numPendingOrders, "pending_orders.dat");
                 break;
             case LOAD_PENDING:
-                //loadPendingOrders(orderArray, &numOrders);
+                loadAndUpdateOrders(pendingOrderArray, &numPendingOrders, "pending_orders.dat");
+                orderCounter = pendingOrderArray[numPendingOrders].orderNumber;
                 break;
             case READY_PENDING_ORDERS:
             	if (numPendingOrders <= 0) {
@@ -115,6 +122,12 @@ int main() {
             	break;
             case SHOW_CLOSED_ORDERS:
             	showOrders(closedOrderArray, numClosedOrders);
+            	break;
+            case SAVE_CLOSED_ORDERS:
+            	saveOrdersToFile(closedOrderArray, numClosedOrders, "closed_orders.dat");
+            	break;
+            case LOAD_CLOSED_ORDERS:
+            	loadAndUpdateOrders(closedOrderArray, &numClosedOrders, "closed_orders.dat");
             	break;
             default:
                 printf("Invalid action.\n");
@@ -282,4 +295,36 @@ Details closeReadyOrder(Details readyOrderArray[], int *numReadyOrders) {
 	return closedOrder;
 }
 
+void saveOrdersToFile(Details orderArray[], int numOrders, const char *filename) {
+    FILE *file = fopen(filename, "wb");  // Open the file in binary write mode
 
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+
+    // Write the number of orders to the file
+    fwrite(&numOrders, sizeof(int), 1, file);
+
+    // Write the entire array to the file
+    fwrite(orderArray, sizeof(Details), numOrders, file);
+
+    fclose(file);  // Close the file
+}
+
+void loadAndUpdateOrders(Details orderArray[], int *numOrders, const char *filename) {
+    FILE *file = fopen(filename, "rb");  // Open the file in binary read mode
+
+    if (file == NULL) {
+        printf("Error opening file %s for reading.\n", filename);
+        return;
+    }
+
+    // Read the number of orders from the file
+    fread(numOrders, sizeof(int), 1, file);
+
+    // Read the entire array from the file
+    fread(orderArray, sizeof(Details), *numOrders, file);
+
+    fclose(file);  // Close the file
+}
