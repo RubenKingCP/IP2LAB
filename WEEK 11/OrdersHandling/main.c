@@ -6,11 +6,14 @@
 enum action {
     EXIT,
     GET_ORDER,
-    SHOW_ORDER,
-    SHOW_ALL_ORDERS,
+    SHOW_CLIENT_ORDER,
+    SHOW_PENDING_ORDERS,
     SAVE_PENDING,
     LOAD_PENDING,
-    FINISH_PENDING
+    READY_PENDING_ORDERS,
+    SHOW_READY_ORDERS,
+    CLOSE_READY_ORDER,
+    SHOW_CLOSED_ORDERS
 };
 
 typedef struct orderCost {
@@ -20,8 +23,7 @@ typedef struct orderCost {
 } Cost;
 
 typedef struct orderDetails {
-    char firstName[50];
-    char lastName[50];
+    char name[50];
     char startDate[20];
     char deadLine[20];
     char endDate[20];
@@ -29,31 +31,45 @@ typedef struct orderDetails {
     int smallBottles;
     int bigBottles;
     int orderNumber;
-    int orderStatus;
+    char orderStatus[20];
 } Details;
 
 
-Details getOrder(int numOrders);
+Details getOrder(int numOrders, int *orderCounter);
 Cost getOrderCost(int bigBottles, int smallBottles);
-void showOrder(Details currentOrder);
+Details finishPendingOrder(Details pendingOrderArray[], int *numPendingOrders);
+Details closeReadyOrder(Details readyOrderArray[], int *numReadyOrders);
+
+void showClientOrder(Details pendingOrderArray[], int numPendingOrders);
 void getCurrentDate();
+void showOrders(Details OrderArray[], int numOrders);
 
 int main() {
     // Set variables
     int action = -1;
-    int numOrders = 0;
-    Details orderArray[100]; // Assuming a maximum of 100 orders
-
+    int numPendingOrders = 0;
+    int numReadyOrders = 0;
+    int numClosedOrders = 0;
+    int orderCounter = 1;
+    
+    Details pendingOrderArray[100]; // Assuming a maximum of 100 orders
+	Details readyOrderArray[100];
+	Details closedOrderArray[100];
+	
     while (action != 0) {
         // Get action
         
         printf("Exit: 0\n");
 		printf("Get order: 1\n");
-		printf("Show current order: 2\n");
-		printf("Show Orders: 3\n");
-		printf("Save pending orders: 4\n");
-		printf("Load pending order: 5\n");
+		printf("Show client orders: 2\n");
+		printf("Show Pending Orders: 3\n");
+		//printf("Save pending orders: 4\n");
+		//printf("Load pending order: 5\n");
 		printf("Ready order: 6\n");
+		printf("Show ready orders: 7\n");
+		printf("Close order: 8\n");
+		printf("Show closed order: 9\n");
+		
         printf("Enter action:\n");
         scanf("%d", &action);
 
@@ -62,17 +78,17 @@ int main() {
             case EXIT:
                 return 0;
             case GET_ORDER:
-                if (numOrders < 100) {
-                    orderArray[numOrders++] = getOrder(numOrders);
+                if (numPendingOrders < 100) {
+                    pendingOrderArray[numPendingOrders++] = getOrder(numPendingOrders, &orderCounter);
                 } else {
                     printf("Maximum number of orders reached.\n");
                 }
                 break;
-            case SHOW_ORDER:
-                showOrder(orderArray[numOrders - 1]);
+            case SHOW_CLIENT_ORDER:
+                showClientOrder(pendingOrderArray, numPendingOrders);
                 break;
-            case SHOW_ALL_ORDERS:
-                //showAllOrders(orderArray, numOrders);
+            case SHOW_PENDING_ORDERS:
+                showOrders(pendingOrderArray, numPendingOrders);
                 break;
             case SAVE_PENDING:
                 //savePendingOrders(orderArray, numOrders);
@@ -80,9 +96,26 @@ int main() {
             case LOAD_PENDING:
                 //loadPendingOrders(orderArray, &numOrders);
                 break;
-            case FINISH_PENDING:
-                //finishPendingOrder(orderArray, numOrders);
+            case READY_PENDING_ORDERS:
+            	if (numPendingOrders <= 0) {
+        			printf("No pending orders to remove.\n");
+        			break;
+    			}
+            	readyOrderArray[numReadyOrders++] = finishPendingOrder(pendingOrderArray, &numPendingOrders);
                 break;
+            case SHOW_READY_ORDERS:
+            	showOrders(readyOrderArray, numReadyOrders);
+            	break;
+            case CLOSE_READY_ORDER:
+            	if (numReadyOrders <= 0) {
+        			printf("No ready orders to remove.\n");
+        			break;
+    			}
+            	closedOrderArray[numClosedOrders++] = closeReadyOrder(readyOrderArray, &numReadyOrders);
+            	break;
+            case SHOW_CLOSED_ORDERS:
+            	showOrders(closedOrderArray, numClosedOrders);
+            	break;
             default:
                 printf("Invalid action.\n");
                 break;
@@ -91,7 +124,7 @@ int main() {
     return 0;
 }
 
-Details getOrder(int numOrders) {
+Details getOrder(int numPendingOrders, int *orderCounter) {
 	//Struct variable
 	Details currentOrder;
 	//Other variables
@@ -102,40 +135,48 @@ Details getOrder(int numOrders) {
 	scanf("%d", &currentOrder.smallBottles);
 	printf("Enter Big Bottles: ");
 	scanf("%d", &currentOrder.bigBottles);
-	printf("Enter First Name of client: ");
-	scanf("%s", &currentOrder.firstName);
-	printf("Enter Last Name of client: ");
-	scanf("%s", &currentOrder.lastName);
+	printf("Enter Name of client: ");
+	scanf("%s", &currentOrder.name);
 	printf("Enter Deadline(DD/MM/YY): ");
 	scanf("%s", &currentOrder.deadLine);
 	
 	//Get the rest of details
-	currentOrder.orderNumber = numOrders;
+	currentOrder.orderNumber = *orderCounter;
+	(*orderCounter)++;
+	
 	//Cost related info
 	currentOrder.orderCost = getOrderCost(currentOrder.bigBottles, currentOrder.smallBottles);
 	//Time info
 	getCurrentDate(startDate);
 	strcpy(currentOrder.startDate, startDate);
+	strcpy(currentOrder.endDate, "--/--/--");
 	//Order Status set to pending
-	strcpy(currentOrder.endDate, "Pending");
-	currentOrder.orderStatus = 0;
+	strcpy(currentOrder.orderStatus, "Pending");
 	
 	return currentOrder;
 }
 
-void showOrder(Details currentOrder){
-	//Print the details
-	printf("Order No.%d Details:\n", currentOrder.orderNumber);
-	printf("\t-Small Bottles: %d\n", currentOrder.smallBottles);
-	printf("\t-Big Bottles: %d\n", currentOrder.bigBottles);
-	printf("\t-First Name: %s\n", currentOrder.firstName);
-	printf("\t-Last Name: %s\n", currentOrder.lastName);
-	printf("\t-Date Received: %s\n", currentOrder.startDate);
-	printf("\t-Deadline: %s\n", currentOrder.deadLine);
-	printf("\t-Starting Cost: %0.2f\n", currentOrder.orderCost.firstCost);
-	printf("\t-Discount: %d\n", currentOrder.orderCost.discount);
-	printf("\t-Final Cost: %0.2f\n", currentOrder.orderCost.finalCost);
-	printf("\t-Date Delivered: %s\n", currentOrder.endDate);
+void showClientOrder(Details orderArray[], int numPendingOrders){
+	char clientName[50];
+	printf("\nEnter client name: ");
+	scanf("%s", &clientName);
+	
+	for(int i = 0;i < numPendingOrders;i++) {
+		if(strcmp(orderArray[i].name, clientName) == 0){
+			//Print the details
+			printf("Order No.%d Details:\n", orderArray[i].orderNumber);
+			printf("\t-Name: %s\n", orderArray[i].name);
+			printf("\t-Small Bottles: %d\n", orderArray[i].smallBottles);
+			printf("\t-Big Bottles: %d\n", orderArray[i].bigBottles);
+			printf("\t-Date Received: %s\n", orderArray[i].startDate);
+			printf("\t-Deadline: %s\n", orderArray[i].deadLine);
+			printf("\t-Starting Cost: %0.2f\n", orderArray[i].orderCost.firstCost);
+			printf("\t-Discount: %d\n", orderArray[i].orderCost.discount);
+			printf("\t-Final Cost: %0.2f\n", orderArray[i].orderCost.finalCost);
+			printf("\t-Date Delivered: %s\n", orderArray[i].endDate);
+			printf("\t-Order Status: %s\n", orderArray[i].orderStatus);
+		}
+	}
 }
 
 Cost getOrderCost(int bigBottles, int smallBottles) {
@@ -176,3 +217,69 @@ void getCurrentDate(char startDate[20]) {
 	//Get time in DD/MM/YY format
 	strftime(startDate, 20, "%d/%m/%y", tm_info);
 }
+
+void showOrders(Details orderArray[], int numOrders) {
+	for(int i = 0; i < numOrders; i++) {
+		//Print the details
+		printf("Order No.%d Details:\n", orderArray[i].orderNumber);
+		printf("\t-Name: %s\n", orderArray[i].name);
+		printf("\t-Small Bottles: %d\n", orderArray[i].smallBottles);
+		printf("\t-Big Bottles: %d\n", orderArray[i].bigBottles);
+		printf("\t-Date Received: %s\n", orderArray[i].startDate);
+		printf("\t-Deadline: %s\n", orderArray[i].deadLine);
+		printf("\t-Starting Cost: %0.2f\n", orderArray[i].orderCost.firstCost);
+		printf("\t-Discount: %d\n", orderArray[i].orderCost.discount);
+		printf("\t-Final Cost: %0.2f\n", orderArray[i].orderCost.finalCost);
+		printf("\t-Date Delivered: %s\n", orderArray[i].endDate);
+		printf("\t-Order Status: %s\n", orderArray[i].orderStatus);
+	}
+}
+
+Details finishPendingOrder(Details pendingOrderArray[], int *numPendingOrders) {
+	//Set variables
+	Details readyOrder;
+	//Set status to ready
+	strcpy(pendingOrderArray[0].orderStatus, "Ready");
+	//Store the struct to the order Array
+	readyOrder = pendingOrderArray[0];
+    // Shift elements to fill the gap
+    for (int i = 0; i < *numPendingOrders - 1; i++) {
+        pendingOrderArray[i] = pendingOrderArray[i + 1];
+    }
+    // Decrement the count of pending orders
+    (*numPendingOrders)--;
+	return readyOrder;
+}
+
+Details closeReadyOrder(Details readyOrderArray[], int *numReadyOrders) {
+	//Set variables
+	char endDate[20];
+	int orderId;
+	int arrayPosition;
+	Details closedOrder;
+	
+	printf("Enter order id: ");
+	scanf("%d", &orderId);
+	
+	for(int i = 0; i < *numReadyOrders; i++) {
+		if(readyOrderArray[i].orderNumber == orderId){
+			//Get the position in array
+			arrayPosition = i;
+			//Get date of end
+			getCurrentDate(endDate);
+			strcpy(readyOrderArray[i].endDate, endDate);
+			//Set status to closed
+			strcpy(readyOrderArray[i].orderStatus, "Closed");
+			closedOrder = readyOrderArray[i];
+		} 
+	}
+	//Shift orders after this one to the left
+	for (int i = arrayPosition; i < *numReadyOrders - 1; i++) {
+        readyOrderArray[i] = readyOrderArray[i + 1];
+    }
+	(*numReadyOrders)--;
+	
+	return closedOrder;
+}
+
+
