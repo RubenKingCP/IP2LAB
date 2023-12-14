@@ -1,0 +1,12 @@
+Order No.1 Details:
+	-Name: jsadhsd
+	-Small Bottles: 312412
+	-Big Bottles: 356432
+	-Date Received: 14/12/23
+	-Deadline: 12/32/43
+	-Starting Cost: 0.00
+	-Discount: 0
+	-Final Cost: 0.00
+	-Date Delivered: --/--/--
+	-Order Status: Pending
+
