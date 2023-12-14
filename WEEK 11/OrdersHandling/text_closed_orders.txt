@@ -1,0 +1,36 @@
+Order Number: 1
+Name: Kostas
+Small Bottles: 3123
+Big Bottles: 123213
+Start Date: 13/12/23
+Deadline: 22/3/12
+Starting Cost: 2489.24
+Discount: 20
+Final Cost: 1991.40
+End Date: 13/12/23
+Order Status: Closed
+
+Order Number: 2
+Name: Kost
+Small Bottles: 23123
+Big Bottles: 23123
+Start Date: 13/12/23
+Deadline: 12/1/32
+Starting Cost: 647.44
+Discount: 20
+Final Cost: 517.96
+End Date: 13/12/23
+Order Status: Closed
+
+Order Number: 3
+Name: anna
+Small Bottles: 3123
+Big Bottles: 4231
+Start Date: 13/12/23
+Deadline: 12/12/32
+Starting Cost: 109.60
+Discount: 8
+Final Cost: 100.84
+End Date: 13/12/23
+Order Status: Closed
+

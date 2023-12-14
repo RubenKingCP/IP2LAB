@@ -47,6 +47,8 @@ void getCurrentDate();
 void showOrders(Details orderArray[], int numOrders);
 void saveOrdersToFile(Details orderArray[], int numOrders, const char *filename);
 void loadAndUpdateOrders(Details orderArray[], int *numOrders, const char *filename);
+void sortClosedArray(Details closedArray[], int numOrders);
+void saveOrdersToTextFile(Details orderArray[], int numOrders, const char *filename);
 
 int main() {
     // Set variables
@@ -98,6 +100,7 @@ int main() {
                 break;
             case SAVE_PENDING:
 				saveOrdersToFile(pendingOrderArray, numPendingOrders, "pending_orders.dat");
+				saveOrdersToTextFile(pendingOrderArray, numPendingOrders, "text_pending_orders.txt");
                 break;
             case LOAD_PENDING:
                 loadAndUpdateOrders(pendingOrderArray, &numPendingOrders, "pending_orders.dat");
@@ -108,7 +111,12 @@ int main() {
         			printf("No pending orders to remove.\n");
         			break;
     			}
-            	readyOrderArray[numReadyOrders++] = finishPendingOrder(pendingOrderArray, &numPendingOrders);
+    			else if(numReadyOrders < 100) {
+    				readyOrderArray[numReadyOrders++] = finishPendingOrder(pendingOrderArray, &numPendingOrders);
+				}
+				else {
+					printf("Maximum number of ready orders reached.");
+				}
                 break;
             case SHOW_READY_ORDERS:
             	showOrders(readyOrderArray, numReadyOrders);
@@ -117,14 +125,19 @@ int main() {
             	if (numReadyOrders <= 0) {
         			printf("No ready orders to remove.\n");
         			break;
-    			}
-            	closedOrderArray[numClosedOrders++] = closeReadyOrder(readyOrderArray, &numReadyOrders);
+    			} else if(numClosedOrders < 100) {
+    				closedOrderArray[numClosedOrders++] = closeReadyOrder(readyOrderArray, &numReadyOrders);
+				}
+				else{
+					printf("Maximum number of closed orders reached.");
+				}
             	break;
             case SHOW_CLOSED_ORDERS:
             	showOrders(closedOrderArray, numClosedOrders);
             	break;
             case SAVE_CLOSED_ORDERS:
             	saveOrdersToFile(closedOrderArray, numClosedOrders, "closed_orders.dat");
+            	saveOrdersToTextFile(closedOrderArray, numClosedOrders, "text_closed_orders.txt");
             	break;
             case LOAD_CLOSED_ORDERS:
             	loadAndUpdateOrders(closedOrderArray, &numClosedOrders, "closed_orders.dat");
@@ -267,27 +280,15 @@ Details finishPendingOrder(Details pendingOrderArray[], int *numPendingOrders) {
 Details closeReadyOrder(Details readyOrderArray[], int *numReadyOrders) {
 	//Set variables
 	char endDate[20];
-	int orderId;
-	int arrayPosition;
 	Details closedOrder;
-	
-	printf("Enter order id: ");
-	scanf("%d", &orderId);
-	
-	for(int i = 0; i < *numReadyOrders; i++) {
-		if(readyOrderArray[i].orderNumber == orderId){
-			//Get the position in array
-			arrayPosition = i;
-			//Get date of end
-			getCurrentDate(endDate);
-			strcpy(readyOrderArray[i].endDate, endDate);
-			//Set status to closed
-			strcpy(readyOrderArray[i].orderStatus, "Closed");
-			closedOrder = readyOrderArray[i];
-		} 
-	}
+	//Get date of end
+	getCurrentDate(endDate);
+	strcpy(readyOrderArray[0].endDate, endDate);
+	//Set status to closed
+	strcpy(readyOrderArray[0].orderStatus, "Closed");
+	closedOrder = readyOrderArray[0];
 	//Shift orders after this one to the left
-	for (int i = arrayPosition; i < *numReadyOrders - 1; i++) {
+	for (int i = 0; i < *numReadyOrders - 1; i++) {
         readyOrderArray[i] = readyOrderArray[i + 1];
     }
 	(*numReadyOrders)--;
@@ -328,3 +329,31 @@ void loadAndUpdateOrders(Details orderArray[], int *numOrders, const char *filen
 
     fclose(file);  // Close the file
 }
+
+void saveOrdersToTextFile(Details orderArray[], int numOrders, const char *filename) {
+    FILE *file = fopen(filename, "w");  // Open the file in text write mode
+
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+
+    // Write each order to the file in a human-readable format
+    for (int i = 0; i < numOrders; ++i) {
+        fprintf(file, "Order Number: %d\n", orderArray[i].orderNumber);
+        fprintf(file, "Name: %s\n", orderArray[i].name);
+        fprintf(file, "Small Bottles: %d\n", orderArray[i].smallBottles);
+        fprintf(file, "Big Bottles: %d\n", orderArray[i].bigBottles);
+        fprintf(file, "Start Date: %s\n", orderArray[i].startDate);
+        fprintf(file, "Deadline: %s\n", orderArray[i].deadLine);
+        fprintf(file, "Starting Cost: %0.2f\n", orderArray[i].orderCost.firstCost);
+        fprintf(file, "Discount: %d\n", orderArray[i].orderCost.discount);
+        fprintf(file, "Final Cost: %0.2f\n", orderArray[i].orderCost.finalCost);
+        fprintf(file, "End Date: %s\n", orderArray[i].endDate);
+        fprintf(file, "Order Status: %s\n", orderArray[i].orderStatus);
+        fprintf(file, "\n");  // Add a separator between orders
+    }
+
+    fclose(file);  // Close the file
+}
+
