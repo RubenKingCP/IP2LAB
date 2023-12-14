@@ -49,103 +49,25 @@ void saveOrdersToFile(Details orderArray[], int numOrders, const char *filename)
 void loadAndUpdateOrders(Details orderArray[], int *numOrders, const char *filename);
 void sortClosedArray(Details closedArray[], int numOrders);
 void saveOrdersToTextFile(Details orderArray[], int numOrders, const char *filename);
+void menu(int action);
+
+//Set the arrays to global scope for easier data sharing
+Details pendingOrderArray[100]; // Assuming a maximum of 100 orders
+Details readyOrderArray[100];
+Details closedOrderArray[100];
+
+//Set the other array count variables as global scope too for data sharing
+int numPendingOrders = 0;
+int numReadyOrders = 0;
+int numClosedOrders = 0;
+int orderCounter = 1;
 
 int main() {
     // Set variables
     int action = -1;
-    int numPendingOrders = 0;
-    int numReadyOrders = 0;
-    int numClosedOrders = 0;
-    int orderCounter = 1;
     
-    Details pendingOrderArray[100]; // Assuming a maximum of 100 orders
-	Details readyOrderArray[100];
-	Details closedOrderArray[100];
-	
     while (action != 0) {
-        // Get action
-        
-        printf("Exit: 0\n");
-		printf("Get order: 1\n");
-		printf("Show client orders: 2\n");
-		printf("Show Pending Orders: 3\n");
-		printf("Save pending orders: 4\n");
-		printf("Load pending order: 5\n");
-		printf("Ready order: 6\n");
-		printf("Show ready orders: 7\n");
-		printf("Close order: 8\n");
-		printf("Show closed order: 9\n");
-		printf("Save closed orders: 10\n");
-		printf("Load closed orders: 11\n");
-		
-        printf("Enter action:\n");
-        scanf("%d", &action);
-
-        // Set logic gate
-        switch (action) {
-            case EXIT:
-                return 0;
-            case GET_ORDER:
-                if (numPendingOrders < 100) {
-                    pendingOrderArray[numPendingOrders++] = getOrder(numPendingOrders, &orderCounter);
-                } else {
-                    printf("Maximum number of orders reached.\n");
-                }
-                break;
-            case SHOW_CLIENT_ORDER:
-                showClientOrder(pendingOrderArray, numPendingOrders);
-                break;
-            case SHOW_PENDING_ORDERS:
-                showOrders(pendingOrderArray, numPendingOrders);
-                break;
-            case SAVE_PENDING:
-				saveOrdersToFile(pendingOrderArray, numPendingOrders, "pending_orders.dat");
-				saveOrdersToTextFile(pendingOrderArray, numPendingOrders, "text_pending_orders.txt");
-                break;
-            case LOAD_PENDING:
-                loadAndUpdateOrders(pendingOrderArray, &numPendingOrders, "pending_orders.dat");
-                orderCounter = pendingOrderArray[numPendingOrders].orderNumber;
-                break;
-            case READY_PENDING_ORDERS:
-            	if (numPendingOrders <= 0) {
-        			printf("No pending orders to remove.\n");
-        			break;
-    			}
-    			else if(numReadyOrders < 100) {
-    				readyOrderArray[numReadyOrders++] = finishPendingOrder(pendingOrderArray, &numPendingOrders);
-				}
-				else {
-					printf("Maximum number of ready orders reached.");
-				}
-                break;
-            case SHOW_READY_ORDERS:
-            	showOrders(readyOrderArray, numReadyOrders);
-            	break;
-            case CLOSE_READY_ORDER:
-            	if (numReadyOrders <= 0) {
-        			printf("No ready orders to remove.\n");
-        			break;
-    			} else if(numClosedOrders < 100) {
-    				closedOrderArray[numClosedOrders++] = closeReadyOrder(readyOrderArray, &numReadyOrders);
-				}
-				else{
-					printf("Maximum number of closed orders reached.");
-				}
-            	break;
-            case SHOW_CLOSED_ORDERS:
-            	showOrders(closedOrderArray, numClosedOrders);
-            	break;
-            case SAVE_CLOSED_ORDERS:
-            	saveOrdersToFile(closedOrderArray, numClosedOrders, "closed_orders.dat");
-            	saveOrdersToTextFile(closedOrderArray, numClosedOrders, "text_closed_orders.txt");
-            	break;
-            case LOAD_CLOSED_ORDERS:
-            	loadAndUpdateOrders(closedOrderArray, &numClosedOrders, "closed_orders.dat");
-            	break;
-            default:
-                printf("Invalid action.\n");
-                break;
-    	}
+        menu(action);
     }
     return 0;
 }
@@ -357,3 +279,99 @@ void saveOrdersToTextFile(Details orderArray[], int numOrders, const char *filen
     fclose(file);  // Close the file
 }
 
+void menu(int action) {
+	// Get action
+    printf("Exit: 0\n");
+	printf("Get order: 1\n");
+	printf("Show client orders: 2\n");
+	printf("Show Pending Orders: 3\n");
+	printf("Save pending orders: 4\n");
+	printf("Load pending order: 5\n");
+	printf("Ready order: 6\n");
+	printf("Show ready orders: 7\n");
+	printf("Close order: 8\n");
+	printf("Show closed order: 9\n");
+	printf("Save closed orders: 10\n");
+	printf("Load closed orders: 11\n");
+		
+    printf("Enter action:\n");
+    scanf("%d", &action);
+
+        // Set logic gate
+        switch (action) {
+            case EXIT:
+                return;
+            case GET_ORDER:
+                if (numPendingOrders < 100) {
+                    pendingOrderArray[numPendingOrders++] = getOrder(numPendingOrders, &orderCounter);
+                } else {
+                    printf("Maximum number of orders reached.\n");
+                }
+                break;
+            case SHOW_CLIENT_ORDER:
+                showClientOrder(pendingOrderArray, numPendingOrders);
+                break;
+            case SHOW_PENDING_ORDERS:
+            	if (numPendingOrders <= 0) {
+        			printf("No pending orders to show.\n");
+        			break;
+    			}
+                showOrders(pendingOrderArray, numPendingOrders);
+                break;
+            case SAVE_PENDING:
+				saveOrdersToFile(pendingOrderArray, numPendingOrders, "pending_orders.dat");
+				saveOrdersToTextFile(pendingOrderArray, numPendingOrders, "text_pending_orders.txt");
+                break;
+            case LOAD_PENDING:
+                loadAndUpdateOrders(pendingOrderArray, &numPendingOrders, "pending_orders.dat");
+                orderCounter = pendingOrderArray[numPendingOrders].orderNumber;
+                break;
+            case READY_PENDING_ORDERS:
+            	if (numPendingOrders <= 0) {
+        			printf("No pending orders to remove.\n");
+        			break;
+    			}
+    			else if(numReadyOrders < 100) {
+    				readyOrderArray[numReadyOrders++] = finishPendingOrder(pendingOrderArray, &numPendingOrders);
+				}
+				else {
+					printf("Maximum number of ready orders reached.");
+				}
+                break;
+            case SHOW_READY_ORDERS:
+            	if(numReadyOrders == 0) {
+            		printf("No ready orders to show.\n");
+            		break;
+				}
+            	showOrders(readyOrderArray, numReadyOrders);
+            	break;
+            case CLOSE_READY_ORDER:
+            	if (numReadyOrders <= 0) {
+        			printf("No ready orders to remove.\n");
+        			break;
+    			} else if(numClosedOrders < 100) {
+    				closedOrderArray[numClosedOrders++] = closeReadyOrder(readyOrderArray, &numReadyOrders);
+				}
+				else{
+					printf("Maximum number of closed orders reached.");
+				}
+            	break;
+            case SHOW_CLOSED_ORDERS:
+            	if(numClosedOrders == 0){
+            		printf("No closed orders to show.\n");
+            		break;
+				}
+            	showOrders(closedOrderArray, numClosedOrders);
+            	break;
+            case SAVE_CLOSED_ORDERS:
+            	saveOrdersToFile(closedOrderArray, numClosedOrders, "closed_orders.dat");
+            	saveOrdersToTextFile(closedOrderArray, numClosedOrders, "text_closed_orders.txt");
+            	break;
+            case LOAD_CLOSED_ORDERS:
+            	loadAndUpdateOrders(closedOrderArray, &numClosedOrders, "closed_orders.dat");
+            	break;
+            default:
+                printf("Invalid action.\n");
+                break;
+    	}
+}
