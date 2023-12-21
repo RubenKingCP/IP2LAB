@@ -1,0 +1,22 @@
+	-Name: fsasda
+	-Small Bottles: 32123
+	-Big Bottles: 23123
+	-Date Received: 21/12/23
+	-Deadline: 21/2/32
+	-Starting Cost: 719.44
+	-Discount: 20
+	-Final Cost: 575.56
+	-Date Delivered: 21/12/23
+	-Order Status: Closed
+
+	-Name: sadsda
+	-Small Bottles: 123123
+	-Big Bottles: 31231
+	-Date Received: 21/12/23
+	-Deadline: 12/3/42
+	-Starting Cost: 1609.60
+	-Discount: 20
+	-Final Cost: 1287.68
+	-Date Delivered: 21/12/23
+	-Order Status: Closed
+

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+#include <stdbool.h>
 
 
 enum action {
@@ -34,7 +36,6 @@ typedef struct orderDetails {
     Cost orderCost;
     int smallBottles;
     int bigBottles;
-    int orderNumber;
 } Details;
 
 //Set prototypes for functions
@@ -46,6 +47,8 @@ void printDetails(Details order);
 void showClientOrder(Details *orderArray, int arrayItemCounter);
 void showOrderArray(Details *orderArray, int arrayItemCounter);
 void getCurrentDate(char startDate[20]);
+int getIntegerInput(int *value);
+bool checkValidDate(char date[10]);
 void readyOrder();
 void closeOrder();
 void calculateDiscountAndFinalCost(Cost *orderCost, int smallBottles, int bigBottles);
@@ -53,6 +56,7 @@ void saveOrdersToBinaryFile(Details *orderArray, int numOrders, const char *file
 void saveOrdersToTXTFile(Details *orderArray, int numOrders, const char *filename);
 void loadOrdersFromFile(Details **orderArray, int *numOrders, const char *filename);
 void freeAll();
+
 
 //Set global arrays for better data sharing
 Details *pendingOrderArray;
@@ -63,13 +67,11 @@ Details *closedOrderArray;
 int numPendingOrder = 0;
 int numReadyOrder = 0;
 int numClosedOrder = 0;
-int orderCounter = 0;
 
 int main() {
 	int switchMenu = -1;
 	
-	while(switchMenu!=0) {
-		switchMenu = menu();
+	while((switchMenu = menu())!=EXIT) {
 	}
 	return 0;
 }
@@ -106,6 +108,7 @@ int menu(){
         	showClientOrder(pendingOrderArray, numPendingOrder);
             break;
         case SHOW_PENDING_ORDERS:
+        	printf("Pending Orders Details.\n");
         	showOrderArray(pendingOrderArray, numPendingOrder);
             break;
         case SAVE_PENDING:
@@ -113,18 +116,20 @@ int menu(){
         	saveOrdersToTXTFile(pendingOrderArray, numPendingOrder, "pending-file.txt");
 			break;
         case LOAD_PENDING:
-        	loadOrdersFromFile(&closedOrderArray, &numClosedOrder, "closed-file.dat");
+        	loadOrdersFromFile(&pendingOrderArray, &numPendingOrder, "pending-file.dat");
             break;
         case READY_PENDING_ORDERS:
         	readyOrder();
             break;
         case SHOW_READY_ORDERS:
+        	printf("Ready Orders Details:\n");
         	showOrderArray(readyOrderArray, numReadyOrder);
         	break;
         case CLOSE_READY_ORDER:
         	closeOrder();
             break;
         case SHOW_CLOSED_ORDERS:
+        	printf("Closed Orders Details:\n");
         	showOrderArray(closedOrderArray, numClosedOrder);
             break;
         case SAVE_CLOSED_ORDERS:
@@ -166,19 +171,30 @@ void getCurrentDate(char startDate[20]) {
 
 void getOrderStats(Details *orderArray, int arrayItemCounter) {
 	char startDate[20];
+	int result;
 	
-	//Variables you assign
 	printf("Enter Name of client: ");
-    scanf("%s", orderArray[arrayItemCounter-1].name);
-    printf("Enter Small Bottles: ");
-    scanf("%d", &orderArray[arrayItemCounter-1].smallBottles);
-    printf("Enter Big Bottles: ");
-    scanf("%d", &orderArray[arrayItemCounter-1].bigBottles);
-    printf("Enter Deadline(DD/MM/YY): ");
-    scanf("%s", orderArray[arrayItemCounter-1].deadLine);
+	if (scanf(" %[^\n]", orderArray[arrayItemCounter-1].name) != 1) {
+    	printf("Error reading input.\n");
+    	// Handle the error, maybe clear the input buffer or take appropriate action
+	}
+    //Set failsafes
+    do {
+    	printf("Enter small bottles: ");
+        result = getIntegerInput(&orderArray[arrayItemCounter-1].smallBottles);
+    } while (result != 1);
+    
+    do {
+    	printf("Enter big bottles: ");
+        result = getIntegerInput(&orderArray[arrayItemCounter-1].bigBottles);
+    } while (result != 1);
+    
+    do{
+    	printf("Enter Deadline(DD/MM/YY): ");
+    	scanf("%s", orderArray[arrayItemCounter-1].deadLine);
+	} while(!checkValidDate(orderArray[arrayItemCounter-1].deadLine));
     
     //Automatic variable assignment
-    orderArray[arrayItemCounter-1].orderNumber = orderCounter;
     strcpy(orderArray[arrayItemCounter-1].orderStatus, "Pending");
     orderArray[arrayItemCounter-1].orderCost.discount = 0;
     orderArray[arrayItemCounter-1].orderCost.firstCost = 0;
@@ -188,16 +204,61 @@ void getOrderStats(Details *orderArray, int arrayItemCounter) {
 	strcpy(orderArray[arrayItemCounter-1].startDate, startDate);
 	strcpy(orderArray[arrayItemCounter-1].endDate, "--/--/--");
 }
+int getIntegerInput(int *value) {
+    int result;
+    char input[20];
+
+    result = scanf("%s", input);
+
+    int i = 0;
+
+    // Check if the input contains both numbers and letters
+    while (input[i] != '\0') {
+    	//Check if it's not a digit
+        if (!isdigit(input[i])) {
+            result = 0; // Set result to 0 to repeat the loop
+            printf("Invalid input. Please enter a valid number.\n");
+
+            // Clear the input buffer
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+
+            return 0;
+        }
+        i++;
+    }
+
+    // Convert the valid input to an integer
+    sscanf(input, "%d", value);
+
+    return result;
+}
+
+bool checkValidDate(char date[10]){
+	int day, month, year;
+	sscanf(date, "%d/%d/%d", &day, &month, &year);
+	if(day < 0 || day > 31) {
+		printf("Invalid date. Enter a valid one.\n");
+		return false;
+	}
+	if(month < 0 || month > 12){
+		printf("Invalid date. Enter a valid one.\n");
+		return false;
+	}
+	if(year < 0 || year > 100){
+		printf("Invalid date. Enter a valid one.\n");
+		return false;
+	}
+	return true;
+}
 
 void getOrder(){
 	allocateArrayMemory(&pendingOrderArray, &numPendingOrder);
-	orderCounter++;
     getOrderStats(pendingOrderArray, numPendingOrder);
 }
 
 void printDetails(Details order){
-	//PrarrayItemPositionnt the details
-	printf("Order No.%d Details:\n", order.orderNumber);
+	//Print the details
 	printf("\t-Name: %s\n", order.name);
 	printf("\t-Small Bottles: %d\n", order.smallBottles);
 	printf("\t-Big Bottles: %d\n", order.bigBottles);
@@ -207,7 +268,7 @@ void printDetails(Details order){
 	printf("\t-Discount: %d\n", order.orderCost.discount);
 	printf("\t-Final Cost: %0.2f\n", order.orderCost.finalCost);
 	printf("\t-Date Delivered: %s\n", order.endDate);
-	printf("\t-Order Status: %s\n", order.orderStatus);
+	printf("\t-Order Status: %s\n\n", order.orderStatus);
 }
 
 void showClientOrder(Details *orderArray, int arrayItemCounter){
@@ -336,7 +397,6 @@ void saveOrdersToTXTFile(Details *orderArray, int numOrders, const char *filenam
 
     // Write each order's details to the file
     for (int i = 0; i < numOrders; ++i) {
-        fprintf(file, "Order No.%d Details:\n", orderArray[i].orderNumber);
         fprintf(file, "\t-Name: %s\n", orderArray[i].name);
         fprintf(file, "\t-Small Bottles: %d\n", orderArray[i].smallBottles);
         fprintf(file, "\t-Big Bottles: %d\n", orderArray[i].bigBottles);
@@ -363,9 +423,6 @@ void loadOrdersFromFile(Details **orderArray, int *numOrders, const char *filena
 
     // Read the number of orders from the file
     fread(numOrders, sizeof(int), 1, file);
-    
-    //Set orderCounter as the current numOrders
-    orderCounter = *numOrders;
 
     // Allocate memory for the order array
     *orderArray = (Details *)malloc(sizeof(Details) * (*numOrders));
@@ -385,4 +442,9 @@ void freeAll(){
 	free(pendingOrderArray);
 	free(readyOrderArray);
 	free(closedOrderArray);
+	
+	// Set pointers to NULL after freeing
+    pendingOrderArray = NULL;
+    readyOrderArray = NULL;
+    closedOrderArray = NULL;
 }

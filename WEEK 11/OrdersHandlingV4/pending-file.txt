@@ -1,9 +1,19 @@
-Order No.1 Details:
-	-Name: jsadhsd
-	-Small Bottles: 312412
-	-Big Bottles: 356432
-	-Date Received: 14/12/23
-	-Deadline: 12/32/43
+	-Name: fsasda
+	-Small Bottles: 32123
+	-Big Bottles: 23123
+	-Date Received: 21/12/23
+	-Deadline: 21/2/32
+	-Starting Cost: 0.00
+	-Discount: 0
+	-Final Cost: 0.00
+	-Date Delivered: --/--/--
+	-Order Status: Pending
+
+	-Name: sadsda
+	-Small Bottles: 123123
+	-Big Bottles: 31231
+	-Date Received: 21/12/23
+	-Deadline: 12/3/42
 	-Starting Cost: 0.00
 	-Discount: 0
 	-Final Cost: 0.00
