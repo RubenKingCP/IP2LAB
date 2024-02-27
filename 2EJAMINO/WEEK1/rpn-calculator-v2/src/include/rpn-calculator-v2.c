@@ -1,19 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "mathTools.h"
 
 #define NUMBER 1
-#define STACK_SIZE 10
 
 typedef struct {
     int num;
     int type;
 } Operator;
 
-typedef struct {
-    int stack[STACK_SIZE];
-    int top;
-} Stack;
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 Operator getOp(void);
@@ -22,8 +18,7 @@ int getFromStack(int num);
 void add(Stack * stack);
 void mul(Stack * stack);
 void presentResult(void);
-void push(int num, Stack * stack);
-int pop(Stack * stack);
+
 
 char input[20];
 Operator inputType;
@@ -100,28 +95,9 @@ void mul(Stack *stack) {
     int tempNum = pop(stack);
     tempNum *= pop(stack); //Get popped element
     push(tempNum, stack);
-    printf("Added\n");
+    printf("Multiplied\n");
 }
 
-void presentResult(void){
-	printf("Present result : %d\n", stack.stack[0]); // Present result
-}
-
-void push(int num, Stack *stack) {
-    if (stack->top < STACK_SIZE) {  // Check if stack is not full
-        stack->stack[stack->top++] = num;
-    } else {
-        printf("Stack overflow\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-
-int pop(Stack *stack) {
-    if (stack->top > 0) {  // Check if stack is not empty
-        return stack->stack[--stack->top];
-    } else {
-        printf("Stack underflow\n");
-        exit(EXIT_FAILURE);  // RExit
-    }
+void presentResult(){
+    printf("Result = %d", stack.stack[0]);
 }
