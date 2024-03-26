@@ -1,16 +1,16 @@
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class Window {
     private String name;
-    private ArrayList<Circle> circles;
-    private ArrayList<Rectangle> squares;
-    private ArrayList<Triangle> triangles;
+    private Vector<Circle> circles;
+    private Vector<Rectangle> squares;
+    private Vector<Triangle> triangles;
 
     public Window(String name){
         this.name = name;
-        circles = new ArrayList<Circle>();
-        squares = new ArrayList<Rectangle>();
-        triangles = new ArrayList<Triangle>();
+        circles = new Vector<Circle>();
+        squares = new Vector<Rectangle>();
+        triangles = new Vector<Triangle>();
 
         System.out.println("creating " + this.name);
         draw();
