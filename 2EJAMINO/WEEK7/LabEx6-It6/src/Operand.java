@@ -27,10 +27,14 @@ public class Operand {
 
     public void complete() {
         if (this.sb.length() > 0) {
-          this.st.push(Double.parseDouble(this.sb.toString()));
+          this.st.push(Double.valueOf(Double.parseDouble(this.sb.toString())));
           this.sb.delete(0, this.sb.length());
           show();
         } 
+    }
+
+    public void reset(){
+        
     }
 
     public Operand(){};
