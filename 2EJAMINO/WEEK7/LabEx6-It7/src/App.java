@@ -6,5 +6,6 @@ public class App {
         st = new Stack<Double>();
     
         new CalculatorGui(st);
+        
     }
 }

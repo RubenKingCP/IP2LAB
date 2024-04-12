@@ -34,7 +34,12 @@ public class Operand {
     }
 
     public void reset(){
-        
+        this.sb = null;
+        st.clear();
+    }
+
+    public String getString(){
+        return this.sb.toString();
     }
 
     public Operand(){};

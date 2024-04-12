@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Stack;
@@ -40,6 +41,8 @@ public class CalculatorGui extends JFrame {
         display = new JTextField("0");
         display.setEditable(false);
         display.setBounds(45, 45, 600, 150);
+        display.setHorizontalAlignment(JTextField.CENTER);
+        display.setFont(new Font("Arial", Font.BOLD, 30));
         add(display);
 
         //First row
@@ -151,6 +154,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             op.addDigit(digit.charAt(0));
+            display.setText(op.getString());
         }
     }
 
@@ -217,6 +221,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonEnterPushed){
             op.complete();
+            display.setText("0");
         }
     }
 
@@ -228,6 +233,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonEnterPushed){
             op.reset();
+            display.setText("0");
         }
     }
 
