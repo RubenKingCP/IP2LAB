@@ -16,6 +16,7 @@ public class CalculatorGui extends JFrame {
     Divider div;
     ResultPresenter rp;
     private JTextField display;
+    private JTextField stackSizeField;
     private final static int startX = 140;
 
     public CalculatorGui(Stack<Double> st) {
@@ -44,6 +45,14 @@ public class CalculatorGui extends JFrame {
         display.setHorizontalAlignment(JTextField.CENTER);
         display.setFont(new Font("Arial", Font.BOLD, 30));
         add(display);
+    
+        // New JTextField for stack size
+        stackSizeField = new JTextField("Stack Size: " + st.size());
+        stackSizeField.setEditable(false);
+        stackSizeField.setBounds(300, 0, 100, 30);
+        stackSizeField.setHorizontalAlignment(JTextField.CENTER);
+        stackSizeField.setFont(new Font("Arial", Font.BOLD, 12));
+        add(stackSizeField);
 
         //First row
         addButton(".", startX, 630);
@@ -143,7 +152,15 @@ public class CalculatorGui extends JFrame {
         button.addActionListener(new ButtonEnterHandler());
         add(button);
     }
-    
+
+    private void updateStackSizeField() {
+        if (st != null) {
+            stackSizeField.setText("Stack size: " + st.size());
+        } else {
+            stackSizeField.setText("Stack size: 0");
+        }
+    }
+
     class ButtonNumberHandler implements ActionListener {
         private String digit;
 
@@ -166,6 +183,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonPlusPushed){
             add.operate();
+            updateStackSizeField();
         }
     }
 
@@ -177,6 +195,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonPlusPushed){
             sub.operate();
+            updateStackSizeField();
         }
     }
 
@@ -188,6 +207,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonPlusPushed){
             mul.operate();
+            updateStackSizeField();
         }
     }
 
@@ -199,6 +219,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonPlusPushed){
             div.operate();
+            updateStackSizeField();
         }
     }
 
@@ -210,6 +231,7 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonPlusPushed){
             op.deleteLastDigit();
+            
         }
     }
 
@@ -222,6 +244,7 @@ public class CalculatorGui extends JFrame {
         public void actionPerformed(ActionEvent buttonEnterPushed){
             op.complete();
             display.setText("0");
+            updateStackSizeField();
         }
     }
 
@@ -234,6 +257,7 @@ public class CalculatorGui extends JFrame {
         public void actionPerformed(ActionEvent buttonEnterPushed){
             op.reset();
             display.setText("0");
+            updateStackSizeField();
         }
     }
 
@@ -245,6 +269,9 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonEqualsPushed){
             rp.operate();
+            display.setText(st.peek().toString());
+            updateStackSizeField();
         }
     }
+    
 }

@@ -8,7 +8,7 @@ public class ResultPresenter {
     }
     
     public void operate() {
-      String str = (this.st.pop()).toString();
+      String str = (this.st.peek()).toString();
       System.out.println(str);
     }
 }
