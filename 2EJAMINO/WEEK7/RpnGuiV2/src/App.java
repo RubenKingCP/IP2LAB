@@ -5,7 +5,7 @@ public class App {
         System.out.println("Hello, World!");
         Stack<Double> st = new Stack<>();
         Operand op = new Operand(st);
-        new CalculatorGui(op);`
+        new CalculatorGui(op);
         
     }
 }
