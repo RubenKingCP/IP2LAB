@@ -11,6 +11,6 @@ public class Divider {
   public void operate() {
     Double d = this.st.pop();
     if (d.doubleValue() != 0.0D)
-      this.st.push(Double.valueOf(((Double)this.st.pop()).doubleValue() / d.doubleValue())); 
+      this.st.push(this.st.pop() / d); 
   }
 }

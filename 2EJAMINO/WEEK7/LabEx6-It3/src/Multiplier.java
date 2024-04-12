@@ -8,6 +8,6 @@ public class Multiplier {
   }
   
   public void operate() {
-    this.st.push(Double.valueOf(((Double)this.st.pop()).doubleValue() * ((Double)this.st.pop()).doubleValue()));
+    this.st.push(this.st.pop() * this.st.pop());
   }
 }

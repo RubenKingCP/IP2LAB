@@ -9,6 +9,6 @@ public class Subtracter {
   
   public void operate() {
     Double d = this.st.pop();
-    this.st.push(Double.valueOf(((Double)this.st.pop()).doubleValue() - d.doubleValue()));
+    this.st.push(this.st.pop() - d);
   }
 }

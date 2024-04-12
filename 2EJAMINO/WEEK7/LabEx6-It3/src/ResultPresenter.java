@@ -8,7 +8,7 @@ public class ResultPresenter {
     }
     
     public void operate() {
-      String str = ((Double)this.st.pop()).toString();
+      String str = (this.st.pop()).toString();
       System.out.println(str);
     }
 }
