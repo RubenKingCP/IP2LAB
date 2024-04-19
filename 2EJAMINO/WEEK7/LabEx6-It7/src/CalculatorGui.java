@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EmptyStackException;
 import java.util.Stack;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -269,7 +270,12 @@ public class CalculatorGui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent buttonEqualsPushed){
             rp.operate();
-            display.setText(st.peek().toString());
+            try{
+                display.setText(st.peek().toString());
+            }
+            catch(EmptyStackException e){
+                
+            }
             updateStackSizeField();
         }
     }

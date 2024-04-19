@@ -1,4 +1,5 @@
 
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class Divider {
@@ -9,8 +10,16 @@ public class Divider {
   }
   
   public void operate() {
-    Double d = this.st.pop();
-    if (d.doubleValue() != 0.0D)
-      this.st.push(this.st.pop() / d); 
+    try {
+      if(this.st.size() > 1){
+        Double d = this.st.pop();
+        if (d.doubleValue() != 0.0D)
+          this.st.push(this.st.pop() / d); 
+      }
+      else throw new EmptyStackException();
+    }
+    catch(EmptyStackException e){
+        new StackEmptyPopUp(this.st);
+    }
   }
 }

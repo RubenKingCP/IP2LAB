@@ -1,3 +1,4 @@
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class ResultPresenter {
@@ -8,7 +9,12 @@ public class ResultPresenter {
     }
     
     public void operate() {
-      String str = (this.st.peek()).toString();
-      System.out.println(str);
+      try{
+        String str = (this.st.peek()).toString();
+        System.out.println(str);
+      }
+      catch(EmptyStackException e){
+        new StackEmptyPopUp(this.st);
+      }
     }
 }

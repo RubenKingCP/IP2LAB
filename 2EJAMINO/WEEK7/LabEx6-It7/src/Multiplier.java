@@ -1,3 +1,4 @@
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class Multiplier {
@@ -8,6 +9,14 @@ public class Multiplier {
   }
   
   public void operate() {
-    this.st.push(this.st.pop() * this.st.pop());
+    try{
+      if(this.st.size() > 1){
+        this.st.push(this.st.pop() * this.st.pop());
+      }
+      else throw new EmptyStackException();
+    }
+    catch(EmptyStackException e){
+      new StackEmptyPopUp(this.st);
+    }
   }
 }
