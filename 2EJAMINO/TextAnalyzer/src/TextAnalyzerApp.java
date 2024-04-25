@@ -8,7 +8,6 @@ public class TextAnalyzerApp {
     private static StringBuilder sb;
     private static String str;
     private static String[] lineList;
-    private static String[] wordList;
 
     public static void readFile(String text) throws IOException{
         int ch;
@@ -33,27 +32,14 @@ public class TextAnalyzerApp {
         //Read file
         readFile("Text.txt");
 
-        // //Split string to words
-        wordList = str.split("[,.\\s]+");
-
-        //Hashmap to track number of apperances
-        HashMap<String, Integer> wordMap = new HashMap<String, Integer>();
-        for(String word : wordList) {
-            if(!wordMap.containsKey(word))
-                wordMap.put(word, 1);
-            else
-                wordMap.put(word, wordMap.get(word) + 1);
-        } 
-        //Print the values
-        wordMap.forEach((key, value) -> System.out.println(key + ": " + value));
-        
-
-        //Line part
         //Split string into lines
         lineList = str.split("\\. ");
-        HashMap<String, Integer> trackHighestCount = new HashMap<String, Integer>();
+
+        //Initiate hashmaps
+        HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
         HashMap<String, Integer> trackLineAppeared = new HashMap<String, Integer>();
-        HashMap<String, Integer> trackLineHighestCount = new HashMap<String, Integer>();
+        HashMap<String, Integer> maxWordCountLine = new HashMap<String, Integer>();
+        
 
         //Split each line into words
         for(int i = 0; i < lineList.length; i++){
@@ -61,44 +47,55 @@ public class TextAnalyzerApp {
 
             //HashMap to track each apperance in sentence
             HashMap<String, Integer> lineWordMap = new HashMap<String, Integer>();
+            HashMap<String, Integer> tmpWordCount = new HashMap<String, Integer>();
             for(String lineWord : lineWordList) {
                 //Check if it appeared in previous instance
-                if(!trackHighestCount.containsKey(lineWord)){
-                    //Get highest count and its line
-                    trackHighestCount.put(lineWord, 1);
+                if(!wordCount.containsKey(lineWord)){
+                    //Add word to wordCount
+                    wordCount.put(lineWord, 1);
                     //Check first time appeared
                     trackLineAppeared.put(lineWord, i);
                 }
                 else{
-                    trackHighestCount.put(lineWord, trackHighestCount.get(lineWord) + 1);
-                    trackLineHighestCount.put(lineWord, i);
+                    //Increase total word counter
+                    wordCount.put(lineWord, wordCount.get(lineWord) + 1);
                 }
 
                 //Check if word appeared 
-                if(!lineWordMap.containsKey(lineWord) && lineWord != " ")
+                if(!lineWordMap.containsKey(lineWord)){
                     lineWordMap.put(lineWord, 1);
+                    //Add word to line word count
+                    tmpWordCount.put(lineWord, 1);
+                }
                 else
                     lineWordMap.put(lineWord, lineWordMap.get(lineWord) + 1);
+                    //Increase line word counter
+                    tmpWordCount.put(lineWord, tmpWordCount.get(lineWord) + 1);
             }
 
             //Print line and all key pair values
             System.out.println("Line " + i + ": " + lineList[i]);
             lineWordMap.forEach((key, value) -> System.out.println("    " + key + ": " + value));
+
+            //Compare this line wordCount with the previous one
+            tmpWordCount.forEach((key, value) -> {
+                if(!maxWordCountLine.containsKey(key)){
+                    maxWordCountLine.put(key, value);
+                } else if(value > maxWordCountLine.get(key)) {
+                    maxWordCountLine.put(key, value);
+                }
+            });
         }
 
-        //TODO: DEBUG
-        // trackHighestCount.forEach((key, value) -> System.out.println("Highest times " + key + " appeared : " + value));
-
-        //Gte in which line it appeared the most
-        //TODO: FIX
-        // trackLineHighestCount.forEach((key, value) -> System.out.println("Highest times " + key + " appeared in line : " + value));
+        //Print total amount of times a word appeared
+        System.out.println("Total amount of times: ");
+        wordCount.forEach((key, value) -> System.out.println("  " + key + ": " + value));
 
         //Check in which line first appeared
         trackLineAppeared.forEach((key, value) -> System.out.println("First time " + key + " appeared in line : " + value));
+
+        //Show most amount of words appeared in one line
+        System.out.println("Most amount of words in one line");
+        maxWordCountLine.forEach((key, value) -> System.out.println("   " + key + " : " + value));
     }
 }
-
-//Iteration 1
-//Read text from file and store in String
-
-
