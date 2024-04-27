@@ -2,12 +2,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 
 public class TextAnalyzerApp {
     private static StringBuilder sb;
     private static String str;
-    private static String[] lineList;
 
     public static void readFile(String text) throws IOException{
         int ch;
@@ -148,13 +148,47 @@ public class TextAnalyzerApp {
         lineMostTimesAppeared.forEach((key, value) -> System.out.println("  " + key + " : " + value));
     }
 
+    public static void wordStatsPerLine(String str) {
+        // Split string into lines
+        String[] lines = str.split("\\. ");
+    
+        HashMap<String, HashMap<String, Integer>> lineStats = new LinkedHashMap<>();
+        for (int i = 0; i < lines.length; i++) {
+            // Split line into words
+            String[] words = lines[i].split("[,.\\s]+");
+    
+            // Hashmap to store the number of times each word appears in the line
+            HashMap<String, Integer> wordsAppearedInLine = new HashMap<>();
+            for (String word : words) {
+                wordsAppearedInLine.put(word, wordsAppearedInLine.getOrDefault(word, 0) + 1);
+            }
+    
+            // Add words per line hashmap to main hashmap
+            lineStats.put("Line " + (i + 1), wordsAppearedInLine);
+        }
+    
+        // Print word statistics per line
+        lineStats.forEach((lineNumber, wordStats) -> {
+            System.out.println(lineNumber + ":");
+            wordStats.forEach((word, frequency) -> {
+                System.out.println("    " + word + " : " + frequency);
+            });
+        });
+    }
+    
 
     public static void main(String[] args) throws Exception {
         //Read file
         readFile("src/Text.txt");
+        //Show in which lines a word appeared
         linesAppeared(str);
+        //Show total amount of words
         totalWordAppearances(str);
+        //Show the first line the word appeared
         firstLineAppeared(str);
+        //Show in which line the most instances of a word appeared
         mostWordsInLineAppeared(str);
+
+        wordStatsPerLine(str);
     }
 }
