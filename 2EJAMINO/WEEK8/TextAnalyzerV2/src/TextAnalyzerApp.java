@@ -47,18 +47,45 @@ public class TextAnalyzerApp {
                 } 
                 //If word appeared before add one to encounter if apperead in this line
                 else if(!appearedInLine.containsKey(word)){
+                    //Put it in hashmap as to not count it again
                     appearedInLine.put(word, 1);
+                    //Increase appeared counter
                     linesWordAppeared.put(word, linesWordAppeared.get(word) + 1);
                 }
             }
         }
 
-        linesWordAppeared.forEach((key, value) -> System.out.println("  " + key + " appeared in : " + value + " lines"));
+        //Print amount of lines appeared
+        System.out.println("Total amount of lines appeared in:");
+        linesWordAppeared.forEach((key, value) -> System.out.println("  " + key + " : " + value));
 
     }
+
+    public static void totalWordAppearances(String str){
+        String [] words = str.split("[,.\\s]+");
+
+        //Hashmap to count words
+        HashMap<String, Integer> countWords = new HashMap<String, Integer>();
+        for(String word : words){
+            //Check if word has been seen
+            if(!countWords.containsKey(word)){
+                //Put in map
+                countWords.put(word, 1);
+            } else {
+                //Increase counter
+                countWords.put(word, countWords.get(word) + 1);
+            }
+        }
+
+        //Print total times
+        System.out.println("Total times appeared:");
+        countWords.forEach((key, value) -> System.out.println("  " + key + " : " + value));
+    }
+
     public static void main(String[] args) throws Exception {
         //Read file
         readFile("src/Text.txt");
         linesAppeared(str);
+        totalWordAppearances(str);
     }
 }
