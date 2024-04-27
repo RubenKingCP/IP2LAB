@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+
 public class TextAnalyzerApp {
     private static StringBuilder sb;
     private static String str;
@@ -104,11 +105,56 @@ public class TextAnalyzerApp {
         lineFirstAppeared.forEach((key, value) -> System.out.println("   " + key + " : " + value));
     }
 
+    public static void mostWordsInLineAppeared(String str){
+        //Split str into lines
+        String [] lines = str.split("\\. ");
+
+        //Hashmap to store max values
+        HashMap<String, Integer> mostTimesAppeared = new HashMap<String, Integer>();
+        //Hashmap to store in which line it appeared
+        HashMap<String, Integer> lineMostTimesAppeared = new HashMap<String, Integer>();
+        for(int i = 0; i < lines.length; i++){
+            //Set final variables
+            int lineIndex = i;
+            //Split line into words
+            String [] words = lines[i].split("[,.\\s]+");
+            //Hashmap to track amount of times a word appeared in line
+            HashMap<String, Integer> timesAppearedInLine = new HashMap<String, Integer>();
+            for(String word : words){
+                if(!timesAppearedInLine.containsKey(word)){
+                    timesAppearedInLine.put(word, 1);
+                } else {
+                    timesAppearedInLine.put(word, timesAppearedInLine.get(word) + 1);
+                }
+            }
+
+            //Compare key values of hashmaps
+            timesAppearedInLine.forEach((key, value) -> {
+                if (!mostTimesAppeared.containsKey(key)) {
+                    mostTimesAppeared.put(key, value);
+                    lineMostTimesAppeared.put(key, lineIndex);
+                } else {
+                    // If the current value is greater than the existing value, update the counts
+                    if (value > mostTimesAppeared.get(key)) {
+                        mostTimesAppeared.put(key, value);
+                        lineMostTimesAppeared.put(key, lineIndex);
+                    }
+                }
+            });
+        }
+
+        //Print in which line the most words appeared
+        System.out.println("Most times word appeared in line :");
+        lineMostTimesAppeared.forEach((key, value) -> System.out.println("  " + key + " : " + value));
+    }
+
+
     public static void main(String[] args) throws Exception {
         //Read file
         readFile("src/Text.txt");
         linesAppeared(str);
         totalWordAppearances(str);
         firstLineAppeared(str);
+        mostWordsInLineAppeared(str);
     }
 }
