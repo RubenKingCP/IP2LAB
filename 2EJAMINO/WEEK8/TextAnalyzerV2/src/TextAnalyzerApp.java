@@ -82,10 +82,33 @@ public class TextAnalyzerApp {
         countWords.forEach((key, value) -> System.out.println("  " + key + " : " + value));
     }
 
+
+    public static void firstLineAppeared(String str){
+        //Split str into lines
+        String [] lines = str.split("\\. ");
+
+        //Hashmap to put words in
+        HashMap<String, Integer> lineFirstAppeared = new HashMap<>();
+        for(int i = 0; i < lines.length ; i++){
+            //Split line into words
+            String [] words = lines[i].split("[,.\\s]+");
+            for(String word : words){
+                if(!lineFirstAppeared.containsKey(word)){
+                    lineFirstAppeared.put(word, i);
+                }
+            }
+        }
+
+        //Print the first line appeared
+        System.out.println("First line appeared:");
+        lineFirstAppeared.forEach((key, value) -> System.out.println("   " + key + " : " + value));
+    }
+
     public static void main(String[] args) throws Exception {
         //Read file
         readFile("src/Text.txt");
         linesAppeared(str);
         totalWordAppearances(str);
+        firstLineAppeared(str);
     }
 }
