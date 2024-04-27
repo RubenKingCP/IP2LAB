@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -95,7 +96,7 @@ public class TextAnalyzerApp {
             String [] words = lines[i].split("[,.\\s]+");
             for(String word : words){
                 if(!lineFirstAppeared.containsKey(word)){
-                    lineFirstAppeared.put(word, i);
+                    lineFirstAppeared.put(word, i + 1);
                 }
             }
         }
@@ -115,7 +116,7 @@ public class TextAnalyzerApp {
         HashMap<String, Integer> lineMostTimesAppeared = new HashMap<String, Integer>();
         for(int i = 0; i < lines.length; i++){
             //Set final variables
-            int lineIndex = i;
+            int lineIndex = i + 1;//Added 1 for human readability
             //Split line into words
             String [] words = lines[i].split("[,.\\s]+");
             //Hashmap to track amount of times a word appeared in line
@@ -152,19 +153,36 @@ public class TextAnalyzerApp {
         // Split string into lines
         String[] lines = str.split("\\. ");
     
+        // Hashmap to store the line and the stats of the line
         HashMap<String, HashMap<String, Integer>> lineStats = new LinkedHashMap<>();
+        HashMap<String, HashMap<String, ArrayList<Integer>>> wordPositionInLine = new HashMap<>();
+    
         for (int i = 0; i < lines.length; i++) {
             // Split line into words
             String[] words = lines[i].split("[,.\\s]+");
     
             // Hashmap to store the number of times each word appears in the line
             HashMap<String, Integer> wordsAppearedInLine = new HashMap<>();
-            for (String word : words) {
-                wordsAppearedInLine.put(word, wordsAppearedInLine.getOrDefault(word, 0) + 1);
+            // Hashmap to store the position of each word in the line
+            HashMap<String, ArrayList<Integer>> positionsInLine = new HashMap<>();
+    
+            // Iterate through the words
+            for (int j = 0; j < words.length; j++) {
+                String word = words[j];
+                if (!wordsAppearedInLine.containsKey(word)) {
+                    wordsAppearedInLine.put(word, 1);
+                    ArrayList<Integer> positions = new ArrayList<>();
+                    positions.add(j + 1); // Adding position of the word
+                    positionsInLine.put(word, positions);
+                } else {
+                    wordsAppearedInLine.put(word, wordsAppearedInLine.get(word) + 1);
+                    positionsInLine.get(word).add(j + 1); // Adding position of the word
+                }
             }
     
             // Add words per line hashmap to main hashmap
             lineStats.put("Line " + (i + 1), wordsAppearedInLine);
+            wordPositionInLine.put("Line " + (i + 1), positionsInLine);
         }
     
         // Print word statistics per line
@@ -172,9 +190,12 @@ public class TextAnalyzerApp {
             System.out.println(lineNumber + ":");
             wordStats.forEach((word, frequency) -> {
                 System.out.println("    " + word + " : " + frequency);
+                // Print positions of the word in the line
+                System.out.println("    Positions: " + wordPositionInLine.get(lineNumber).get(word));
             });
         });
     }
+    
     
 
     public static void main(String[] args) throws Exception {
@@ -188,7 +209,7 @@ public class TextAnalyzerApp {
         firstLineAppeared(str);
         //Show in which line the most instances of a word appeared
         mostWordsInLineAppeared(str);
-
+        //Show how many times a unique word appeared in each line
         wordStatsPerLine(str);
     }
 }
