@@ -1,40 +1,54 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class TextAnalyzerApp {
+    private static Scanner myInput;
+    private static String text;
+    private static TextOperations operations;
 
     public static void menu(String choice){
         switch (choice) {
             case "ds":
-                System.out.println("ds works");
+                operations.showSentences(text);
                 break;
             
             case "dw":
-                System.out.println("dw works");
-
+                System.out.println(operations.showWords(text));
                 break;
 
             case "dSt":
-                System.out.println("dSt works");
-                
+                operations.getTextStats(text);
                 break;
             
             default:
+                operations.getWordStats(choice, text);
                 break;
         }
     }
 
     public static String getChoice(){
-        Scanner myInput = new Scanner(System.in);
-        System.out.println("Enter word to get Stats (ds-display sentences, dw-display words, dSt-display Statistics,q-to quit):");
-        String myInputWord = myInput.nextLine();
-        System.out.println(myInputWord);
-        return myInputWord;
+        myInput = new Scanner(System.in);
+        System.out.println("\nEnter word to get Stats (ds-display sentences, dw-display words, dSt-display Statistics,q-to quit):");
+        return myInput.nextLine();
+        
     }
 
     public static void main(String[] args) throws Exception {
         String choice = "";
+
+        operations = new TextOperations();
+        System.out.println("TextAnalayzerApp Report");
+        try{
+            text = operations.readFile("Text.txt");
+        } catch(IOException e){
+            System.out.println("File not found aborting!");
+            return;
+        }
+
         while (!(choice = getChoice()).equals("q")) {
             menu(choice);
         }
+
+        System.out.println("TextAnalyzerApp terminated!");
     }
 }
